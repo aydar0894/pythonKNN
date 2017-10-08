@@ -12,10 +12,7 @@ class MainHandler(BaseHTTPRequestHandler):
 		params = parsed_path.query.split(",")
 		print(params)
 		users = ann(45,int(params[0]),int(params[1]),int(params[2]))
-		message_parts = [
-				'Result:',
-				'users=' +str(users)             
-				]        
+		message_parts = str(users)       
 		message = '\r\n'.join(message_parts)
 		self.send_response(200)
 		self.end_headers()
