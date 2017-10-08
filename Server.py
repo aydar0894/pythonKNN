@@ -14,7 +14,7 @@ class MainHandler(BaseHTTPRequestHandler):
 		print(params)
 		users = ann(45,int(params[0]),int(params[1]),int(params[2]))
 		message_parts = str(users)       
-		message = '\r\n'.join(message_parts)
+		message = message_parts
 		self.send_response(200)
 		self.end_headers()
 		self.wfile.write(str.encode(message))
