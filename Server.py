@@ -2,6 +2,7 @@ import cgi
 import sys
 from urllib.parse import urlparse
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from sklearn import neighbors
 import pickle
 
 class MainHandler(BaseHTTPRequestHandler):
