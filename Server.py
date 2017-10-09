@@ -18,7 +18,7 @@ class MainHandler(BaseHTTPRequestHandler):
 		message = message_parts
 		self.send_response(200)
 		self.end_headers()
-		self.wfile.write(str.encode(json.dumps(message))
+		self.wfile.write(str.encode(json.dumps(message)).replace("[","").replace("]",""))
 		return
 
 	def do_POST(self):
