@@ -1,5 +1,6 @@
 import cgi
 import sys
+import json
 from urllib.parse import urlparse
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from sklearn import neighbors
@@ -17,7 +18,7 @@ class MainHandler(BaseHTTPRequestHandler):
 		message = message_parts
 		self.send_response(200)
 		self.end_headers()
-		self.wfile.write(str.encode(message))
+		self.wfile.write(json.dumps(message))
 		return
 
 	def do_POST(self):
