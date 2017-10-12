@@ -29,10 +29,10 @@ class MainHandler(BaseHTTPRequestHandler):
 			params = parsed_path.query
 			message = spamRecog(params)
 			result = ""
-			if message[0] == "spam":
-				result = "1"
-			else:
+			if message[0] == "ham":
 				result = "0"
+			else:
+				result = "1"
 			self.send_response(200)
 			self.end_headers()
 			self.wfile.write(str.encode(result))
