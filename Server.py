@@ -15,7 +15,7 @@ class MainHandler(BaseHTTPRequestHandler):
 		if self.path == '/offers/':       
 			parsed_path = urlparse(self.path)
 			if parsed_path.query == '':
-				return
+				return self.wfile.write(str.encode("error"))
 			params = parsed_path.query.split(",")
 			print(params)
 			users = offers(45,int(params[0]),int(params[1]),int(params[2]))
