@@ -25,7 +25,7 @@ class MainHandler(BaseHTTPRequestHandler):
 			self.end_headers()
 			self.wfile.write(str.encode(str(message).replace("[","").replace("]","")))
 			return
-		elif '/spam_check' in self.path:: 
+		elif '/spam_check' in self.path: 
 			params = parsed_path.query
 			message = spamRecog(params)
 			result = ""
