@@ -12,8 +12,8 @@ import pickle
 
 class MainHandler(BaseHTTPRequestHandler):
 	def do_GET(self): 
-		if '/offers' in self.path:       
-			parsed_path = urlparse(self.path)
+		parsed_path = urlparse(self.path)
+		if '/offers' in self.path:
 			if parsed_path.query == '':
 				return self.wfile.write(str.encode("error"))
 			params = parsed_path.query.split(",")
