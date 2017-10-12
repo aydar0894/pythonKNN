@@ -12,7 +12,7 @@ import pickle
 
 class MainHandler(BaseHTTPRequestHandler):
 	def do_GET(self): 
-		if self.path == '/offers':       
+		if self.path == '/offers/':       
 			parsed_path = urlparse(self.path)
 			if parsed_path.query == '':
 				return
@@ -25,7 +25,7 @@ class MainHandler(BaseHTTPRequestHandler):
 			self.end_headers()
 			self.wfile.write(str.encode(str(message).replace("[","").replace("]","")))
 			return
-		if self.path == '/spam_check': 
+		if self.path == '/spam_check/': 
 			params = parsed_path.query
 			message = spamRecog(params)
 			result = ""
