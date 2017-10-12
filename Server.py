@@ -1,9 +1,13 @@
 import cgi
 import sys
 import json
+import pandas as pd
 from urllib.parse import urlparse
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from sklearn import neighbors
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model.logistic import LogisticRegression
+from sklearn.model_selection import train_test_split, cross_val_score
 import pickle
 
 class MainHandler(BaseHTTPRequestHandler):
@@ -14,7 +18,7 @@ class MainHandler(BaseHTTPRequestHandler):
 				return
 			params = parsed_path.query.split(",")
 			print(params)
-			users = ann(45,int(params[0]),int(params[1]),int(params[2]))
+			users = offers(45,int(params[0]),int(params[1]),int(params[2]))
 			message_parts = str(users)       
 			message = message_parts
 			self.send_response(200)
@@ -22,25 +26,17 @@ class MainHandler(BaseHTTPRequestHandler):
 			self.wfile.write(str.encode(str(message).replace("[","").replace("]","")))
 			return
 		if self.path == '/spam_check': 
-			message = '1'
+			params = parsed_path.query
+			message = spamRecog(params)
+			result = ""
+			if message[0] == "spam":
+				result = "1"
+			else:
+				result = "0"
 			self.send_response(200)
 			self.end_headers()
-			self.wfile.write(str.encode(message))
+			self.wfile.write(str.encode(result))
 			return
-
-	def do_GET(self):        
-		parsed_path = urlparse(self.path)
-		if parsed_path.query == '':
-			return
-		params = parsed_path.query.split(",")
-		print(params)
-		users = ann(45,int(params[0]),int(params[1]),int(params[2]))
-		message_parts = str(users)       
-		message = message_parts
-		self.send_response(200)
-		self.end_headers()
-		self.wfile.write(str.encode(str(message).replace("[","").replace("]","")))
-		return
 
 	def do_POST(self):
 		a = 1
@@ -92,8 +88,22 @@ def main(port):
 	except KeyboardInterrupt:
 		print('^C received, shutting down server')
 		server.socket.close()
-		
-def ann(usersCount, tid, duration, timePeriod):
+
+def spamRecog(descr):
+	df = pd.read_csv('./SMSSpamCollection.csv', delimiter='\t',header=None)
+
+	X_train_raw, X_test_raw, y_train, y_test = train_test_split(df[1],df[0])
+
+	vectorizer = TfidfVectorizer()
+	X_train = vectorizer.fit_transform(X_train_raw)
+	classifier = LogisticRegression()
+	classifier.fit(X_train, y_train)
+
+	X_test = vectorizer.transform( [descr] )
+	predictions = classifier.predict(X_test)
+	return predictions
+	
+def offers(usersCount, tid, duration, timePeriod):
 	with open('KNN_offers.pkl', 'rb') as f:
 		clf = pickle.load(f)
 	
