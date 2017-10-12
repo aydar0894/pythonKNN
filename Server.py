@@ -12,31 +12,31 @@ import pickle
 
 class MainHandler(BaseHTTPRequestHandler):
 	def do_GET(self): 
-		if urlparse(self.path) == '/offers/':       
-			parsed_path = urlparse(self.path)
-			if parsed_path.query == '':
-				return self.wfile.write(str.encode("error"))
-			params = parsed_path.query.split(",")
-			print(params)
-			users = offers(45,int(params[0]),int(params[1]),int(params[2]))
-			message_parts = str(users)       
-			message = message_parts
-			self.send_response(200)
-			self.end_headers()
-			self.wfile.write(str.encode(str(message).replace("[","").replace("]","")))
-			return
-		if urlparse(self.path) == '/spam_check/': 
-			params = parsed_path.query
-			message = spamRecog(params)
-			result = ""
-			if message[0] == "spam":
-				result = "1"
-			else:
-				result = "0"
-			self.send_response(200)
-			self.end_headers()
-			self.wfile.write(str.encode(result))
-			return
+	# if urlparse(self.path) == '/offers':       
+		parsed_path = urlparse(self.path)
+		if parsed_path.query == '':
+			return self.wfile.write(str.encode("error"))
+		params = parsed_path.query.split(",")
+		print(params)
+		users = offers(45,int(params[0]),int(params[1]),int(params[2]))
+		message_parts = str(users)       
+		message = message_parts
+		self.send_response(200)
+		self.end_headers()
+		self.wfile.write(str.encode(str(message).replace("[","").replace("]","")))
+		return
+		# if urlparse(self.path) == '/spam_check': 
+		# 	params = parsed_path.query
+		# 	message = spamRecog(params)
+		# 	result = ""
+		# 	if message[0] == "spam":
+		# 		result = "1"
+		# 	else:
+		# 		result = "0"
+		# 	self.send_response(200)
+		# 	self.end_headers()
+		# 	self.wfile.write(str.encode(result))
+		# 	return
 
 	def do_POST(self):
 		a = 1
