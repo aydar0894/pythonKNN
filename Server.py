@@ -41,7 +41,7 @@ class MainHandler(BaseHTTPRequestHandler):
 		elif '/learn_offers_ann' in self.path: 
 			params = parsed_path.query
 			args = json.loads(params)
-			print(args)
+		print(args)
 			message = learnOffersAnn(args)
 			result = ""			
 			self.send_response(200)
@@ -136,11 +136,11 @@ def learnOffersAnn(inArr):
 
 
 	for weights in ['distance']:    
-	    clf = neighbors.KNeighborsClassifier(n_neighbors, weights=weights)
-	    clf.fit(X, dummy_y)
-	    
-    with open('KNN_offers.pkl', 'wb') as fid:
-        s = pickle.dump(clf,fid)
+		clf = neighbors.KNeighborsClassifier(n_neighbors, weights=weights)
+		clf.fit(X, dummy_y)
+		
+	with open('KNN_offers.pkl', 'wb') as fid:
+		s = pickle.dump(clf,fid)
 	
 def offers(usersCount, tid, duration, timePeriod):
 	with open('KNN_offers.pkl', 'rb') as f:
