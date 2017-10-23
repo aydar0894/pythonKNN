@@ -40,7 +40,7 @@ class MainHandler(BaseHTTPRequestHandler):
 			return
 		elif '/learn_offers_ann' in self.path: 
 			params = parsed_path.query
-			print(params)
+			print(params[0].uid)
 			message = learnOffersAnn(params)
 			result = ""			
 			self.send_response(200)
