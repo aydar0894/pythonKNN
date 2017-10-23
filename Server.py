@@ -5,6 +5,7 @@ import pandas as pd
 from urllib.parse import urlparse
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from sklearn import neighbors
+from sklearn.preprocessing import LabelEncoder
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model.logistic import LogisticRegression
 from sklearn.model_selection import train_test_split, cross_val_score
@@ -36,6 +37,15 @@ class MainHandler(BaseHTTPRequestHandler):
 			self.send_response(200)
 			self.end_headers()
 			self.wfile.write(str.encode(result))
+			return
+		elif '/learn_offers_ann' in self.path: 
+			params = parsed_path.query
+			args = json.loads(params)
+			print(args)
+			message = learnOffersAnn(args)
+			result = ""			
+			self.send_response(200)
+			self.end_headers()			
 			return
 
 	def do_POST(self):
@@ -102,6 +112,35 @@ def spamRecog(descr):
 	X_test = vectorizer.transform( [descr] )
 	predictions = classifier.predict(X_test)
 	return predictions
+def learnOffersAnn(inArr):
+	n_neighbors = 7
+	arr = inArr
+	# [{'action': 1,'uid': 0, 'time': 3, 'tag': 2, 'duration': 10},
+ #     {'action': 2,'uid': 1, 'time': 2, 'tag': 1, 'duration': 14},
+ #     {'action': 3,'uid': 2, 'time': 4, 'tag': 1, 'duration': 7}];
+
+	df = pd.DataFrame(arr)
+	df = df[['uid', 'time', 'tag', 'duration','action']]
+	dataset = df.values
+
+
+
+	encoder = LabelEncoder()
+	encoder.fit(Y)
+	encoded_Y = encoder.transform(Y)
+
+	dummy_y = np_utils.to_categorical(encoded_Y)
+
+
+	h = .02  
+
+
+	for weights in ['distance']:    
+	    clf = neighbors.KNeighborsClassifier(n_neighbors, weights=weights)
+	    clf.fit(X, dummy_y)
+	    
+    with open('KNN_offers.pkl', 'wb') as fid:
+        s = pickle.dump(clf,fid)
 	
 def offers(usersCount, tid, duration, timePeriod):
 	with open('KNN_offers.pkl', 'rb') as f:
