@@ -19,7 +19,7 @@ class MainHandler(BaseHTTPRequestHandler):
 				return self.wfile.write(str.encode("error"))
 			params = parsed_path.query.split(",")
 			print(params)
-			users = offers(45,int(params[0]),int(params[1]),int(params[2]))
+			users = offers(20,int(params[0]),int(params[1]),int(params[2]))
 			message_parts = str(users)       
 			message = message_parts
 			self.send_response(200)
@@ -40,6 +40,7 @@ class MainHandler(BaseHTTPRequestHandler):
 			return
 		elif '/learn_offers_ann' in self.path: 
 			params = parsed_path.query
+			print(params)
 			args = json.loads(params)
 			print(args)
 			message = learnOffersAnn(args)
