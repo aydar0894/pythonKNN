@@ -41,9 +41,7 @@ class MainHandler(BaseHTTPRequestHandler):
 		elif '/learn_offers_ann' in self.path: 
 			params = parsed_path.query
 			print(params)
-			args = json.loads(params)
-			print(args)
-			message = learnOffersAnn(args)
+			message = learnOffersAnn(params)
 			result = ""			
 			self.send_response(200)
 			self.end_headers()			
