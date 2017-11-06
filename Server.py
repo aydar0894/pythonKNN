@@ -14,6 +14,7 @@ import pickle
 
 
 offersDataset = []
+users = []
 class MainHandler(BaseHTTPRequestHandler):
 
 	
@@ -127,7 +128,7 @@ def spamRecog(descr):
 	return predictions
 def learnOffersAnn(inArr):	
 	
-
+	users.appent(inArr[0])
 	offersDataset.append(inArr)
 	if (len(offersDataset) % 10) == 0:
 		n_neighbors = 7
@@ -160,7 +161,7 @@ def offers(usersCount, tid, duration, timePeriod):
 		clf = pickle.load(f)
 	
 	result = []
-	for i in range(usersCount):
+	for i in users:
 		tmp = []
 		tmp.append(i)
 		tmp.append(tid)
