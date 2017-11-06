@@ -11,9 +11,11 @@ from sklearn.linear_model.logistic import LogisticRegression
 from sklearn.model_selection import train_test_split, cross_val_score
 import pickle
 
+
+offersDataset = []
 class MainHandler(BaseHTTPRequestHandler):
 
-	offersDataset = []
+	
 
 
 	def do_GET(self): 
