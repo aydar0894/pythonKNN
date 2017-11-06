@@ -12,6 +12,10 @@ from sklearn.model_selection import train_test_split, cross_val_score
 import pickle
 
 class MainHandler(BaseHTTPRequestHandler):
+
+	offersDataset = []
+
+
 	def do_GET(self): 
 		parsed_path = urlparse(self.path)
 		if '/offers' in self.path:
@@ -39,10 +43,17 @@ class MainHandler(BaseHTTPRequestHandler):
 			self.wfile.write(str.encode(result))
 			return
 		elif '/learn_offers_ann' in self.path: 
-			params = parsed_path.query
-			print(params[0].uid)
-			message = learnOffersAnn(params)
-			result = ""			
+			params = parsed_path.query.split(",")
+			json = {
+				'uid' : params[0],
+				'time' : params[1],
+				'tag' : params[2],
+				'duration' : params[3],
+				'action' : params[4]
+			}
+			print(json)
+			message = learnOffersAnn(json)
+			result = ""
 			self.send_response(200)
 			self.end_headers()			
 			return
@@ -111,35 +122,35 @@ def spamRecog(descr):
 	X_test = vectorizer.transform( [descr] )
 	predictions = classifier.predict(X_test)
 	return predictions
-def learnOffersAnn(inArr):
-	n_neighbors = 7
-	arr = inArr
-	# [{'action': 1,'uid': 0, 'time': 3, 'tag': 2, 'duration': 10},
- #     {'action': 2,'uid': 1, 'time': 2, 'tag': 1, 'duration': 14},
- #     {'action': 3,'uid': 2, 'time': 4, 'tag': 1, 'duration': 7}];
+def learnOffersAnn(inArr):	
+	
 
-	df = pd.DataFrame(arr)
-	df = df[['uid', 'time', 'tag', 'duration','action']]
-	dataset = df.values
+ 	offersDataset.append(inArr)
+ 	if (offersDataset.length % 10) == 0:
+	 	n_neighbors = 7
+		df = pd.DataFrame(offersDataset)
+		df = df[['uid', 'time', 'tag', 'duration','action']]
+		dataset = df.values
 
+		X = dataset[:, 0:4]
+		Y = dataset[:, 4]
 
+		encoder = LabelEncoder()
+		encoder.fit(Y)
+		encoded_Y = encoder.transform(Y)
 
-	encoder = LabelEncoder()
-	encoder.fit(Y)
-	encoded_Y = encoder.transform(Y)
-
-	dummy_y = np_utils.to_categorical(encoded_Y)
-
-
-	h = .02  
+		dummy_y = np_utils.to_categorical(encoded_Y)
 
 
-	for weights in ['distance']:    
-		clf = neighbors.KNeighborsClassifier(n_neighbors, weights=weights)
-		clf.fit(X, dummy_y)
-		
-	with open('KNN_offers.pkl', 'wb') as fid:
-		s = pickle.dump(clf,fid)
+		h = .02  
+
+
+		for weights in ['distance']:    
+			clf = neighbors.KNeighborsClassifier(n_neighbors, weights=weights)
+			clf.fit(X, dummy_y)
+			
+		with open('KNN_offers.pkl', 'wb') as fid:
+			s = pickle.dump(clf,fid)
 	
 def offers(usersCount, tid, duration, timePeriod):
 	with open('KNN_offers.pkl', 'rb') as f:
