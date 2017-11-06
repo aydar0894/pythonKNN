@@ -128,7 +128,7 @@ def learnOffersAnn(inArr):
 	
 
 	offersDataset.append(inArr)
-	if (offersDataset.length % 10) == 0:
+	if (len(offersDataset) % 10) == 0:
 		n_neighbors = 7
 		df = pd.DataFrame(offersDataset)
 		df = df[['uid', 'time', 'tag', 'duration','action']]
